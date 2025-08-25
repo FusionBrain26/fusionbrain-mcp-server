@@ -16,12 +16,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class PipelineServiceStub implements PipelineService {
     private final ConcurrentHashMap<UUID, Instant> genStartedMap = new ConcurrentHashMap<>();
+    private static final long GENERATION_DELAY_SECONDS = 1L;
 
     @Override
     public StartGenerateToolResponse startGenerateImage(StartGenerateToolRequest request) {
         UUID resourceId = UUID.randomUUID();
         genStartedMap.put(resourceId, Instant.now());
-        return StartGenerateToolResponse.started(resourceId, 20L);
+        return StartGenerateToolResponse.started(resourceId, GENERATION_DELAY_SECONDS);
     }
 
     @Override
@@ -32,7 +33,7 @@ public class PipelineServiceStub implements PipelineService {
             return new StatusToolResponse(GenerateToolStatus.INTERNAL_ERROR);
         }
 
-        if (Instant.now().minusSeconds(20L).isAfter(genStartInstant)) {
+        if (Instant.now().minusSeconds(GENERATION_DELAY_SECONDS).isAfter(genStartInstant)) {
             genStartedMap.remove(resourceId);
             return new StatusToolResponse(GenerateToolStatus.FINISHED, "something based");
         }
@@ -42,7 +43,7 @@ public class PipelineServiceStub implements PipelineService {
     @Override
     public StatusToolResponse generateImageSynchronously(StartGenerateToolRequest request) {
         try {
-            Thread.sleep(20000L);
+            Thread.sleep(GENERATION_DELAY_SECONDS * 1000); // 1 секунда
             return new StatusToolResponse(GenerateToolStatus.FINISHED, "something based");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
