@@ -1,0 +1,19 @@
+fusionbrain:
+  enabled: true
+spring:
+  application:
+    name: fusionbrain-mcp-server
+  ai:
+    mcp:
+      server:
+        type: sync
+        name: ${spring.application.name}
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36}\t%msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36}\t%msg%n"
+  logback:
+    rollingpolicy:
+      file-name-pattern: ${logging.file.path:}/application.%d{yyyy-MM-dd}_%i.log
+      max-history: 5
+      max-file-size: 100KB

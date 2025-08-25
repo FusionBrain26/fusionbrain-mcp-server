@@ -1,0 +1,13 @@
+fusionbrain:
+  enabled: true
+  ssl:
+    enabled: false
+  api-key: api-key
+  api-secret: api-secret
+  poll-delay-seconds: 3
+spring:
+  ai:
+    mcp:
+      server:
+        type: sync
+        name: ${spring.application.name}
